@@ -2,19 +2,16 @@
 
 @section('content')
 <article style="text-align:center;">
-  <header>
-    <h2 style="color:#065f46;">Payment Received</h2>
-    <p class="muted">This is a confirmation screen for demo purposes</p>
-  </header>
+  <h2 style="color:#16a34a;">Payment Received</h2>
 
-  <div style="font-size:4rem; line-height:1;">✅</div>
-  <div class="muted">Amount</div>
-  <div style="font-size:2.2rem; font-weight:800; margin:.2rem 0;">
-    RM {{ number_format((float)request('amount', 0), 2) }}
+  <div style="margin:1.5rem 0;">
+    <img src="https://img.icons8.com/emoji/96/check-mark-emoji.png" alt="Paid" width="96" height="96">
+    <p class="muted">Amount</p>
+    <h3>RM {{ number_format((float)$amount, 2) }}</h3>
   </div>
 
-  <footer style="margin-top:1rem;">
-    <a href="{{ route('calculator') }}" role="button">New Sale</a>
+  <footer style="margin-top:1.5rem;">
+    <a href="{{ route('calculator') }}" role="button" class="primary">New Sale</a>
   </footer>
 </article>
 @endsection

@@ -5,17 +5,35 @@
   const payBtn = document.getElementById('payBtn');
   if (!display || !raw || !hidden) return;
 
-  let amount = '';
+  // Store value as integer cents (e.g., 1234 => RM 12.34)
+  let cents = 0;
+  const MAX_DIGITS = 9; // up to 9999999.99 (adjust if you need more)
 
-  function setAmount(next) {
-    // allow only 2 decimals
-    if (!/^\d*(?:\.\d{0,2})?$/.test(next)) return;
-    amount = next;
-    const num = Number(amount || 0);
-    display.textContent = formatMYR(num);
-    raw.textContent = amount || '0';
-    hidden.value = amount || '';
-    payBtn && (payBtn.disabled = !(num > 0));
+  function setCents(nextCents) {
+    // clamp to non-negative and within range
+    nextCents = Math.max(0, Math.min(nextCents, 10 ** MAX_DIGITS - 1));
+    cents = nextCents;
+
+    const amount = cents / 100;
+    display.textContent = formatMYR(amount);
+    raw.textContent = amount.toFixed(2);     // show raw decimal (for debugging)
+    hidden.value = amount.toFixed(2);        // submit as "12.34"
+    if (payBtn) payBtn.disabled = cents <= 0;
+  }
+
+  function pushDigit(d) {
+    // prevent overflow of digits
+    const currentDigits = String(cents);
+    if (currentDigits.length >= MAX_DIGITS) return;
+    setCents(cents * 10 + d);
+  }
+
+  function backspace() {
+    setCents(Math.floor(cents / 10));
+  }
+
+  function clearAll() {
+    setCents(0);
   }
 
   function formatMYR(n) {
@@ -26,21 +44,22 @@
     }
   }
 
+  // Hook up keypad buttons
   document.querySelectorAll('[data-key]').forEach(btn => {
     btn.addEventListener('click', () => {
       const k = btn.getAttribute('data-key');
-      if (k === 'CLR') return setAmount('');
-      if (k === 'DEL') return setAmount(amount.slice(0, -1));
-      if (k === '.') {
-        if (!amount) return setAmount('0.');
-        if (amount.includes('.')) return;
-        return setAmount(amount + '.');
-      }
-      // digits
-      return setAmount(amount + k);
+
+      if (k === 'CLR') return clearAll();
+      if (k === 'DEL') return backspace();
+
+      // Ignore decimal dot in this mode (not needed)
+      if (k === '.') return;
+
+      // digits 0-9
+      if (/^\d$/.test(k)) return pushDigit(Number(k));
     });
   });
 
   // initialize
-  setAmount('');
+  setCents(0);
 })();
