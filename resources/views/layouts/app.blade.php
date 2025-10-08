@@ -3,12 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Affanpay Lite</title>
+  <title>Payment</title>
   <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@2/css/pico.min.css">
   <style>
     .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: .6rem; }
     .amount-display { font-size: 2.2rem; font-weight: 700; letter-spacing: .5px; }
     .muted { color:#6b7280; font-size:.85rem; }
+    .icon-btn { display:flex; align-items:center; justify-content:center; width:40px; height:40px; border-radius:10px; }
+    .icon-btn:hover { background:rgba(0,0,0,.06); }
+    .icon { width:26px; height:26px; }
   </style>
 </head>
 <body class="h-full">
@@ -16,7 +19,7 @@
 <header class="container-fluid" style="border-bottom:1px solid #eee;">
   <nav class="container">
     <ul>
-      <li><strong>Affanpay Lite</strong></li>
+      <li><!-- no branding --></li>
     </ul>
     <ul>
       @if(session('affanpay_token'))
@@ -28,7 +31,16 @@
           </form>
         </li>
       @else
-        <li><a href="{{ route('login.show') }}" role="button">Login</a></li>
+        <li>
+          <a href="{{ route('login.show') }}" class="icon-btn" title="Menu / Login" aria-label="Menu / Login">
+            {{-- Heroicons: Bars-3 (Hamburger Menu) --}}
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                 stroke-width="2" stroke="currentColor" class="icon">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+            </svg>
+          </a>
+        </li>
       @endif
     </ul>
   </nav>
